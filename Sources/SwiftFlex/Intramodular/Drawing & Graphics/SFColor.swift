@@ -14,35 +14,53 @@ import UniformTypeIdentifiers
 
 /// A representation of a color that adapts to a given context.
 ///
-/// You can create an SFColor in various ways:
-/// 1. Load a color from an Asset Catalog:
-///    ```swift
-///    let aqua = SFColor("aqua") // Looks in your app's main bundle by default.
-///    ```
-/// 2. Specify component values, like red, green, and blue; hue, saturation, and brightness; or white level:
-///    ```swift
-///    let skyBlue = SFColor(red: 0.4627, green: 0.8392, blue: 1.0)
-///    let lemonYellow = SFColor(hue: 0.1639, saturation: 1, brightness: 1)
-///    let steelGray = SFColor(white: 0.4745)
-///    ```
-/// 3. Create a color instance from another color, like a `UIColor` or an `NSColor`:
-///    ```swift
-///    #if os(iOS)
-///    let linkColor = SFColor(uiColor: .link)
-///    #elseif os(macOS)
-///    let linkColor = SFColor(nsColor: .linkColor)
-///    #endif
-///    ```
-/// 4. Use predefined colors, like `ShapeStyle/black`, `ShapeStyle/green`, and `ShapeStyle/purple`.
+/// You can create a color in one of several ways:
 ///
-/// Some view modifiers can take an SFColor as an argument. For example, `View/foregroundStyle(_:)` uses the color to set the foreground color for view elements.
+/// * Load a color from an Asset Catalog:
+///     ```swift
+///     let aqua = SFColor("aqua") // Looks in your app's main bundle by default.
+///     ```
+/// * Specify component values, like red, green, and blue; hue,
+///   saturation, and brightness; or white level:
+///     ```swift
+///     let skyBlue = SFColor(red: 0.4627, green: 0.8392, blue: 1.0)
+///     let lemonYellow = SFColor(hue: 0.1639, saturation: 1, brightness: 1)
+///     let steelGray = SFColor(white: 0.4745)
+///     ```
+/// * Create a color from a hex or binary value:
+///    ```swift
+///    let red = SFColor(hex: 0xFF0000)
+///    let green = SFColor(hex: 0x00FF00)
+///    let blue = SFColor(bin: 0x0000FF)
 ///
-/// ```swift
-/// Image(systemName: "leaf.fill")
-///     .foregroundStyle(SFColor.green)
-/// ```
+///    let red = SFColor(bin: 0b111111110000000000000000)
+///    let green = SFColor(bin: 0b000000001111111100000000)
+///    let blue = SFColor(bin: 0b000000000000000011111111)
+///    ```
 ///
-/// Because SwiftUI treats colors as `View` instances, you can directly add them to a view hierarchy. For example, you can layer a rectangle beneath a sun image using colors defined above:
+/// * Create a color instance from another color, like a UIColor or an NSColor:
+///     ```swift
+///     #if os(iOS)
+///     let linkColor = SFColor(uiColor: .link)
+///     #elseif os(macOS)
+///     let linkColor = SFColor(nsColor: .linkColor)
+///     #endif
+///     ```
+/// * Use one of a palette of predefined colors, like ``ShapeStyle/black``,
+///   ``ShapeStyle/green``, and ``ShapeStyle/purple``.
+///
+/// Some view modifiers can take a color as an argument. For example,
+/// ``View/foregroundStyle(_:)`` uses the color you provide to set the
+/// foreground color for view elements, like text or sf-symbols:
+///     ```swift
+///     Image(systemName: "leaf.fill")
+///         .foregroundStyle(SFColor.green)
+///     ```
+/// ![A screenshot of a green leaf.](Color-1)
+///
+/// Because SwiftUI treats colors as ``View`` instances, you can also
+/// directly add them to a view hierarchy. For example, you can layer
+/// a rectangle beneath a sun image using colors defined above:
 ///
 /// ```swift
 /// ZStack {
@@ -51,7 +69,19 @@ import UniformTypeIdentifiers
 ///         .foregroundStyle(lemonYellow)
 /// }
 /// .frame(width: 200, height: 100)
-/// ```
+///  ```
+///
+/// A color used as a view expands to fill all the space it's given,
+/// as defined by the frame of the enclosing ``ZStack`` in the above example:
+///
+/// ![A screenshot of a yellow sun on a blue background.](Color-2@2x)
+///
+/// SwiftUI only resolves a color to a concrete value
+/// just before using it in a given environment.
+/// This enables a context-dependent appearance for
+/// system defined colors, or those that you load from an Asset Catalog.
+/// For example, a color can have distinct light and dark variants
+/// that the system chooses from at render time.
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 @frozen public struct SFColor: Hashable, CustomStringConvertible, Sendable {
 
@@ -110,15 +140,15 @@ import UniformTypeIdentifiers
 
 
 @available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
-extension Color {
+extension SFColor {
 
     /// A concrete color value.
     ///
-    /// `Color.Resolved` is a set of RGBA values that represent a color that can
+    /// `SFColor.Resolved` is a set of RGBA values that represent a color that can
     /// be shown. The values are in Linear sRGB color space, extended range. This is
-    /// a low-level type, most colors are represented by the `Color` type.
+    /// a low-level type, most colors are represented by the `SFColor` type.
     ///
-    /// - SeeAlso: `Color`
+    /// - SeeAlso: `SFColor`
     @frozen public struct Resolved : Hashable {
 
         /// The amount of red in the color in the sRGB linear color space.
@@ -144,7 +174,7 @@ extension Color {
         /// - Parameters:
         ///   - lhs: A value to compare.
         ///   - rhs: Another value to compare.
-        public static func == (a: Color.Resolved, b: Color.Resolved) -> Bool
+        public static func == (a: SFColor.Resolved, b: SFColor.Resolved) -> Bool
 
         /// Hashes the essential components of this value by feeding them into the
         /// given hasher.
@@ -176,7 +206,7 @@ extension Color {
 
     /// Creates a constant color with the values specified by the resolved
     /// color.
-    public init(_ resolved: Color.Resolved)
+    public init(_ resolved: SFColor.Resolved)
 }
 
 @available(iOS, introduced: 14.0, deprecated: 100000.0, message: "Use Color(cgColor:) when converting a CGColor, or create a standard Color directly")
@@ -184,13 +214,11 @@ extension Color {
 @available(tvOS, introduced: 14.0, deprecated: 100000.0, message: "Use Color(cgColor:) when converting a CGColor, or create a standard Color directly")
 @available(watchOS, introduced: 7.0, deprecated: 100000.0, message: "Use Color(cgColor:) when converting a CGColor, or create a standard Color directly")
 @available(visionOS, introduced: 1.0, deprecated: 100000.0, message: "Use Color(cgColor:) when converting a CGColor, or create a standard Color directly")
-extension Color {
+extension SFColor {
 
     /// Creates a color from a Core Graphics color.
     ///
-    /// - Parameter color: A
-    ///   <doc://com.apple.documentation/documentation/CoreGraphics/CGColor> instance
-    ///   from which to create a color.
+    /// - Parameter color: A CGColor instance from which to create a color.
     public init(_ cgColor: CGColor)
 }
 
@@ -199,9 +227,7 @@ extension SFColor {
 
     /// Creates a color from a Core Graphics color.
     ///
-    /// - Parameter color: A
-    ///   <doc://com.apple.documentation/documentation/CoreGraphics/CGColor> instance
-    ///   from which to create a color.
+    /// - Parameter color: A CGColor instance from which to create a color.
     public init(cgColor: CGColor)
 }
 
@@ -222,16 +248,18 @@ extension SFColor {
     ///
     /// You can then instantiate colors by referencing the names of the assets:
     ///
-    ///     struct Hello: View {
-    ///         var body: some View {
-    ///             ZStack {
-    ///                 Color("background")
-    ///                 Text("Hello, world!")
-    ///                     .foregroundStyle(Color("foreground"))
-    ///             }
-    ///             .frame(width: 200, height: 100)
+    /// ```swift
+    /// struct Hello: View {
+    ///     var body: some View {
+    ///         ZStack {
+    ///             Color("background")
+    ///             Text("Hello, world!")
+    ///                 .foregroundStyle(SFColor("foreground"))
     ///         }
+    ///         .frame(width: 200, height: 100)
     ///     }
+    /// }
+    /// ```
     ///
     /// SwiftUI renders the appropriate colors for each appearance:
     ///
@@ -251,7 +279,7 @@ extension SFColor {
 @available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
 extension SFColor {
 
-    /// Initialize a `Color` with a color resource.
+    /// Initialize a `SFColor` with a color resource.
     public init(_ resource: ColorResource)
 }
 
@@ -261,8 +289,8 @@ extension SFColor : Transferable {
     /// One group of colors–constant colors–created with explicitly specified
     /// component values are transferred as is.
     ///
-    /// Another group of colors–standard colors, like `Color.mint`,
-    /// and semantic colors, like `Color.accentColor`–are rendered on screen
+    /// Another group of colors–standard colors, like `SFColor.mint`,
+    /// and semantic colors, like `SFColor.accentColor`–are rendered on screen
     /// differently depending on the current ``SwiftUI/Environment``. For transferring,
     /// they are resolved against the default environment and might produce
     /// a slightly different result at the destination if the source of drag
@@ -453,9 +481,9 @@ extension SFColor {
     /// The following code renders a ``Text`` view using the app's accent color:
     ///
     ///     Text("Accent Color")
-    ///         .foregroundStyle(Color.accentColor)
+    ///         .foregroundStyle(SFColor.accentColor)
     ///
-    public static var accentColor: Color { get }
+    public static var accentColor: SFColor { get }
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
@@ -534,8 +562,7 @@ extension SFColor {
 
     /// Creates a color from a UIKit color.
     ///
-    /// Use this method to create a SwiftUI color from a
-    /// <doc://com.apple.documentation/documentation/UIKit/UIColor> instance.
+    /// Use this method to create a SwiftUI color from a UIColor instance.
     /// The new color preserves the adaptability of the original.
     /// For example, you can create a rectangle using
     /// <doc://com.apple.documentation/documentation/UIKit/UIColor/3173132-link>
@@ -543,7 +570,7 @@ extension SFColor {
     ///
     ///     struct Box: View {
     ///         var body: some View {
-    ///             Color(UIColor.link)
+    ///             SFColor(UIColor.link)
     ///                 .frame(width: 200, height: 100)
     ///         }
     ///     }
@@ -608,6 +635,51 @@ extension SFColor {
     ///   <doc://com.apple.documentation/documentation/UIKit/UIColor> instance
     ///   from which to create a color.
     public init(uiColor: UIColor)
+}
+
+@available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
+extension SFColor {
+    /// A type representing a custom color in the SFColor library.
+    ///
+    /// SFColor provides two initializers for creating color instances from hexadecimal and binary values.
+    /// The `hex` initializer takes a 24-bit hexadecimal color value and creates an SFColor instance.
+    /// - Parameters:
+    ///   - hex: A 24-bit hexadecimal color value.
+    ///
+    /// **Usage:**
+    ///   ```swift
+    ///   let red = SFColor(hex: 0xFF0000)
+    ///   let green = SFColor(hex: 0x00FF00)
+    ///   let blue = SFColor(hex: 0x0000FF)
+    ///   ```
+    public init(hex: UInt32) {
+        self.init(
+            red: Double((hex & 0xFF0000) >> 16) / 255.0,
+            green: Double((hex & 0x00FF00) >> 8) / 255.0,
+            blue: Double(hex & 0x0000FF) / 255.0
+        )
+    }
+
+    /// A type representing a custom color in the SFColor library.
+    ///
+    /// SFColor provides two initializers for creating color instances from hexadecimal and binary values.
+    /// The `bin` initializer takes a 24-bit binary color value and creates an SFColor instance.
+    /// - Parameters:
+    ///   - bin: A 24-bit binary color value.
+    ///
+    /// **Usage:**
+    ///   ```swift
+    ///   let red = SFColor(bin: 0b111111110000000000000000)
+    ///   let green = SFColor(bin: 0b000000001111111100000000)
+    ///   let blue = SFColor(bin: 0b000000000000000011111111)
+    ///   ```
+    public init(bin: UInt32) {
+        self.init(
+            red: Double((bin & 0xFF0000) >> 16) / 255.0,
+            green: Double((bin & 0x00FF00) >> 8) / 255.0,
+            blue: Double(bin & 0x0000FF) / 255.0
+        )
+    }
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
@@ -758,6 +830,7 @@ extension SFColor.RGBColorSpace : Equatable {
 extension SFColor.RGBColorSpace : Hashable {
 }
 
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 extension View {
     /// Sets the color of the foreground elements displayed by this view.
     func foregroundColor(_ color: SFColor?) -> some View {
