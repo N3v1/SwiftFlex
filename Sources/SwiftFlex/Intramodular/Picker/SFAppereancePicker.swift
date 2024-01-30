@@ -18,7 +18,7 @@ public struct SFAppereancePicker: View {
             Spacer()
             
             VStack(alignment: .center) {
-                Image(.colorPickerBlack)
+                Image("ColorPicker-black")
                 Text("Always dark")
                     .fontWeight(.semibold)
                 
@@ -30,7 +30,7 @@ public struct SFAppereancePicker: View {
             Spacer()
             
             VStack(alignment: .center) {
-                Image(.colorPickerWhite)
+                Image("ColorPicker-white")
                 Text("Always light")
                     .fontWeight(.semibold)
                 
@@ -42,3 +42,9 @@ public struct SFAppereancePicker: View {
         }
     }
 }
+//
+//extension View {
+//    public func SFAppereancePicker(isSelected: Binding<Bool>, action: @escaping () -> Void) -> some View {
+//        SFAppereancePicker(isSelected: isSelected, action: action)
+//    }
+//}
