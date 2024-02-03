@@ -1,6 +1,6 @@
 //
-//  Header.h
-//  
+//  SFScalingHeaderScrollView.h
+//  SwiftFlex
 //
 //  Created by Nevio Hirani on 03.02.24.
 //
