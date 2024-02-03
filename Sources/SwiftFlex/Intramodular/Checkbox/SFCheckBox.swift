@@ -12,14 +12,14 @@ public struct SFCircularCheckbox: View {
     @Binding var isSelected: Bool
     let onTap: () -> Void
     
-    var selectionColor: Color = Color.orange
+    var selectionColor: SFColor = SFColor.orange
     var size: CGFloat = 20
     
     public var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10, style: .circular)
-                .stroke(isSelected ? Color.clear : Color.gray, lineWidth: 2)
-                .background(isSelected ? Color.orange : Color.clear)
+                .stroke(isSelected ? SFColor.clear : SFColor.gray, lineWidth: 2)
+                .background(isSelected ? SFColor.orange : SFColor.clear)
                 .frame(width: size, height: size)
                 .clipShape(Circle())
                 .onTapGesture {

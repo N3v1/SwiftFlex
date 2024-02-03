@@ -21,7 +21,7 @@ import SwiftUI
 /// cornerRadius: CGFloat,
 /// action: @escaping () -> Void)
 /// ```
-struct SFButtonView: View {
+public struct SFButtonView: View {
     var text: String
     var font: Font
     var backgroundColor: Color
@@ -29,7 +29,7 @@ struct SFButtonView: View {
     var cornerRadius: CGFloat
     var action: () -> Void
 
-    var body: some View {
+    public var body: some View {
         Button(action: {
             action()
         }) {
@@ -65,7 +65,7 @@ extension View {
     ///
     /// - Returns: A view representing the styled button.
     ///
-    func SFButton(text: String, font: Font, backgroundColor: Color, textColor: Color, cornerRadius: CGFloat, action: @escaping () -> Void) -> some View {
+    public func SFButton(text: String, font: Font, backgroundColor: Color, textColor: Color, cornerRadius: CGFloat, action: @escaping () -> Void) -> some View {
         SFButtonView(text: text, font: font, backgroundColor: backgroundColor, textColor: textColor, cornerRadius: cornerRadius, action: action)
     }
 }

@@ -39,7 +39,7 @@ import SwiftUI
 ///
 /// - Returns: A view representing the styled button with an image on the left side.
 ///
-struct SFButton_Image: View {
+public struct SFButton_Image: View {
     var text: String
     var font: Font
     var textColor: Color
@@ -53,7 +53,7 @@ struct SFButton_Image: View {
     var imageWidth: CGFloat
     var imageHeight: CGFloat
     
-    var body: some View {
+    public var body: some View {
         Button(action: {
             action()
         }) {
@@ -134,7 +134,7 @@ extension View {
     ///   // The action to perform when the button is tapped comes here.
     /// }
     /// ```
-    func SFImageButton(text: String, font: Font, backgroundColor: Color, textColor: Color, cornerRadius: CGFloat, image: Image? = nil, systemImageName: String? = nil, imageWidth: CGFloat, imageHeight: CGFloat, action: @escaping () -> Void) -> some View {
+    public func SFImageButton(text: String, font: Font, backgroundColor: Color, textColor: Color, cornerRadius: CGFloat, image: Image? = nil, systemImageName: String? = nil, imageWidth: CGFloat, imageHeight: CGFloat, action: @escaping () -> Void) -> some View {
         SFButton_Image(text: text, font: font, textColor: textColor, backgroundColor: backgroundColor, cornerRadius: cornerRadius, action: action, image: image, systemImageName: systemImageName, imageWidth: imageWidth, imageHeight: imageHeight)
     }
 }
